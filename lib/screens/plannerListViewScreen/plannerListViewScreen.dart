@@ -12,7 +12,6 @@ class PlannerListViewScreen extends StatelessWidget {
         child: Container(
           child: Column(
             children: [
-              // DataContainer(date: '12', month: 'Nov', year: '2020'),
               MapViewButton(),
             ],
           ),

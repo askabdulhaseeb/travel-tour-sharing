@@ -1,9 +1,9 @@
 import 'dart:async';
+import 'package:dummy_project/screens/homeScreen/homeScreen.dart';
 import 'package:flutter/material.dart';
 import '../../core/myFonts.dart';
 import '../../core/myPhotos.dart';
 import '../../database/userLocalData.dart';
-import '../planFeedScreen/plans_feed_screen.dart';
 import '../../screens/auth/loginScreen/loginScreen.dart';
 
 class WelcomeScreen extends StatefulWidget {
@@ -22,7 +22,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         (UserLocalData.getUserUID() == null || UserLocalData.getUserUID() == '')
             ? Navigator.of(context).pushReplacementNamed(LoginScreen.routeName)
             : Navigator.of(context).pushNamedAndRemoveUntil(
-                PlansFeedScreen.routeName, (route) => false);
+                HomeScreen.routeName, (route) => false);
       },
     );
   }

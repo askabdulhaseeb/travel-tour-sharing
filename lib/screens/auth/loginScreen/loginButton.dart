@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dummy_project/screens/homeScreen/homeScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,7 +9,6 @@ import '../../../core/myColors.dart';
 import '../../../database/databaseMethod.dart';
 import '../../../models/app_user.dart';
 import '../../allPlacesTypeScreen/all_places_type_screeen.dart';
-import '../../planFeedScreen/plans_feed_screen.dart';
 import '../../widgets/showLoadingDialog.dart';
 
 class LoginButton extends StatelessWidget {
@@ -47,7 +47,7 @@ class LoginButton extends StatelessWidget {
               AppUser _ctUser = AppUser.fromDocument(temp);
               if (_ctUser.interest.length > 4) {
                 Navigator.of(context).pushNamedAndRemoveUntil(
-                  PlansFeedScreen.routeName,
+                  HomeScreen.routeName,
                   (route) => false,
                 );
               } else {

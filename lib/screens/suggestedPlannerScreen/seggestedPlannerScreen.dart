@@ -87,11 +87,7 @@ class _SuggestedPlannerScreenState extends State<SuggestedPlannerScreen> {
                           .returnTime,
                     ),
                     const SizedBox(height: 10),
-                    SavePlanButton(
-                      globalKey: _globalKey,
-                      controller: _planName,
-                      isPublic: _isPublic,
-                    ),
+                    SavePlanButton(),
                   ],
                 ),
               ),

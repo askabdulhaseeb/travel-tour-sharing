@@ -12,7 +12,7 @@ class GeneratePlannerButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        _plannerCondition(context);
+        Navigator.of(context).pushNamed(SuggestedPlannerScreen.routeName);
       },
       child: Container(
         height: 44,
@@ -34,36 +34,5 @@ class GeneratePlannerButton extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  _plannerCondition(BuildContext context) {
-    if (Provider.of<PlacesProvider>(context, listen: false).startingPoint ==
-            null ||
-        Provider.of<PlacesProvider>(context, listen: false).endingPoint ==
-            null ||
-        Provider.of<TripDateTimeProvider>(context, listen: false)
-                .startingDate ==
-            null ||
-        Provider.of<TripDateTimeProvider>(context, listen: false).endingDate ==
-            null ||
-        Provider.of<TripDateTimeProvider>(context, listen: false)
-                .departureTime ==
-            null ||
-        Provider.of<TripDateTimeProvider>(context, listen: false).returnTime ==
-            null) {
-      // All things are null
-
-      Fluttertoast.showToast(
-        msg: 'Pleace Fill Requirments given in the form',
-        backgroundColor: Colors.red,
-        timeInSecForIosWeb: 4,
-      );
-    } else {
-      PlacesMethods().storePlaceInfoInFirebase(
-          Provider.of<PlacesProvider>(context, listen: false).startingPoint);
-      PlacesMethods().storePlaceInfoInFirebase(
-          Provider.of<PlacesProvider>(context, listen: false).endingPoint);
-      Navigator.of(context).pushNamed(SuggestedPlannerScreen.routeName);
-    }
   }
 }
