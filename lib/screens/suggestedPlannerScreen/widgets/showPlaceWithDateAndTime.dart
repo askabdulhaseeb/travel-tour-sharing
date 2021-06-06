@@ -28,7 +28,6 @@ class ShowPlaceWithDateAndTime extends StatelessWidget {
         Row(
           children: [
             ShowSelectedDate(date: _tripDate, onClick: null),
-            // Text('ssfcdsscc'),
             Spacer(),
           ],
         ),

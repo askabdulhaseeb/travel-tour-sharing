@@ -23,7 +23,54 @@ class SavePlanButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () async {},
+      onTap: () async {
+        if (_globalKey.currentState.validate()) {
+          showLoadingDislog(context, 'message');
+          TripDateTimeProvider tripDateTimeProvider =
+              Provider.of<TripDateTimeProvider>(context, listen: false);
+          PlacesProvider placesProvider =
+              Provider.of<PlacesProvider>(context, listen: false);
+          List<String> _plantype = placesProvider?.endingPoint?.getPlaceTypes();
+          Plan _plan = Plan(
+            planID: '',
+            uid: UserLocalData.getUserUID(),
+            planName: controller?.text?.trim(),
+            departurePlaceID: placesProvider?.startingPoint?.getPlaceID(),
+            destinationPlaceID: placesProvider?.endingPoint?.getPlaceID(),
+            planType: _plantype,
+            isPublic: isPublic,
+            likes: 0,
+            budget: 0,
+            timeStemp: Timestamp.now(),
+            departureTime:
+                tripDateTimeProvider?.departureTime?.getFormatedTime(),
+            destinationTime:
+                tripDateTimeProvider?.returnTime?.getFormatedTime(),
+            departureDate:
+                tripDateTimeProvider?.startingDate?.getFormatedDate(),
+            returnDate: tripDateTimeProvider?.endingDate?.getFormatedDate(),
+          );
+          await PlanMethods().storePlanAtFirebase(_plan);
+
+          final List<String> _userInterest = UserLocalData.getUserInterest();
+          _plantype?.forEach((pType) {
+            if (!_userInterest.contains(pType)) {
+              _userInterest.add(pType);
+            }
+          });
+          await DatabaseMethods().updateUserDoc(
+            uid: UserLocalData.getUserUID(),
+            userMap: {'interest': _userInterest},
+          );
+          UserLocalData.setUserInterest(_userInterest);
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            HomeScreen.routeName,
+            (route) => false,
+          );
+        } else {
+          print('Error in Button');
+        }
+      },
       child: Container(
         height: 44,
         width: double.infinity,
