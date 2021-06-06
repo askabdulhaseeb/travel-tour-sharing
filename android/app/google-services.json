@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "392515098356",
+    "project_id": "tour-travel-sharing-app",
+    "storage_bucket": "tour-travel-sharing-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:392515098356:android:6b2773af8ade2eb951f0a1",
+        "android_client_info": {
+          "package_name": "com.example.dummy_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "392515098356-g0u8rj5jui2747jfuf64ct8edbfm6ms7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.dummy_project",
+            "certificate_hash": "f63c6e073798d1378d8dad2b80be5e2c50ef71f9"
+          }
+        },
+        {
+          "client_id": "392515098356-4372t299rs24sbnqdf9211m4gjhnqmcl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXCVFEhtUfo7y0RUvGrMwb2FhXHYZ4IAE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "392515098356-4372t299rs24sbnqdf9211m4gjhnqmcl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

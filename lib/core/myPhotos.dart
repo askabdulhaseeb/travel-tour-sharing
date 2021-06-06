@@ -1,0 +1,11 @@
+const String logoPAK = 'assets/images/PAK.png';
+const String appLogo = 'assets/images/logo.png';
+const String safarKarUrdu = 'assets/images/SafarKar-Urdu.png';
+const String familyTripPath = 'assets/images/family_trip.png';
+const String religiousTripPath = 'assets/images/religious.png';
+const String sportsTripPath = 'assets/images/sports.png';
+const String signinPath = 'assets/images/sign_in.png';
+const String signupPath = 'assets/images/sign_up.png';
+const String facebookLogo = 'assets/images/facebook.png';
+const String googleLogo = 'assets/images/google.png';
+const String appIcon = 'assets/icons/icon.jpg';
