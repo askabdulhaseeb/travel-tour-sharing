@@ -11,6 +11,19 @@ class PlanMethods {
         .get();
   }
 
+  storePlanAtFirebase(Plan plan) async {
+    await FirebaseFirestore.instance
+        .collection(_fPlan)
+        .add(plan.toMap())
+        .then((value) => FirebaseFirestore.instance
+            .collection(_fPlan)
+            .doc(value.id)
+            .update({'planID': value.id}))
+        .catchError((Object obj) {
+      print('Error');
+    });
+  }
+
   getPlanOfSpecificType({@required String type}) async {
     return FirebaseFirestore.instance
         .collection(_fPlan)

@@ -7,6 +7,7 @@ import './providers/trips.dart';
 import './providers/placesproviders.dart';
 import './providers/tripDateTimeProvider.dart';
 import './screens/allPlacesTypeScreen/all_places_type_screeen.dart';
+import './screens/planFeedScreen/plans_feed_screen.dart';
 import './screens/reportProbleScreen/report_problem_screen.dart';
 import './screens/myPlannerScreen/my_planner_screen.dart';
 import './screens/placeDeatilScreen/placeDetailScreen.dart';
@@ -18,6 +19,7 @@ import './screens/auth/signupScreen/signupScreen.dart';
 import './screens/homeScreen/homeScreen.dart';
 import './screens/PlannerForm/plannerFormScreen.dart';
 import './screens/plannerListViewScreen/plannerListViewScreen.dart';
+import './screens/plannerMapScreen/plan_map_view_screen.dart';
 import './screens/plannerForm/aboutLocations/SearchLocation/SearchStartingPoint.dart';
 import './screens/plannerForm/aboutLocations/SearchLocation/searchEndingPoint.dart';
 
@@ -53,7 +55,7 @@ class MyApp extends StatelessWidget {
               AllPlacesTypeScreen.routeName: (ctx) => AllPlacesTypeScreen(),
               LoginScreen.routeName: (ctx) => LoginScreen(),
               SignUpScreen.routeName: (ctx) => SignUpScreen(),
-              HomeScreen.routeName: (ctx) => HomeScreen(),
+              PlansFeedScreen.routeName: (ctx) => PlansFeedScreen(),
               HomeScreen.routeName: (ctx) => HomeScreen(),
               PlannerFormScreen.routeName: (ctx) => PlannerFormScreen(),
               SuggestedPlannerScreen.routeName: (ctx) =>
@@ -62,6 +64,7 @@ class MyApp extends StatelessWidget {
               SearchStartingPoint.routeName: (ctx) => SearchStartingPoint(),
               SearchEndingPoint.routeName: (ctx) => SearchEndingPoint(),
               PlannerListViewScreen.routeName: (ctx) => PlannerListViewScreen(),
+              PlanMapViewScreen.routeName: (ctx) => PlanMapViewScreen(),
               MyPlannerScreen.routeName: (ctx) => MyPlannerScreen(),
               ProfileScreen.routeName: (ctx) => ProfileScreen(),
               ReportProblemScreen.routeName: (ctx) => ReportProblemScreen(),

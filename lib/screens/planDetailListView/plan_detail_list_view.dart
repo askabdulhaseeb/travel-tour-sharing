@@ -1,8 +1,8 @@
-import 'package:dummy_project/screens/homeScreen/homeScreen.dart';
 import 'package:flutter/material.dart';
 import '../../models/plan.dart';
 import '../../providers/placesproviders.dart';
 import '../planDetailListView/place_time_detail_card.dart';
+import '../plannerMapScreen/plan_map_view_screen.dart';
 import '../widgets/homeAppBar.dart';
 
 class PlanDetailListView extends StatefulWidget {
@@ -76,11 +76,13 @@ class _PlanDetailListViewState extends State<PlanDetailListView> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.map_outlined),
+        child: const Icon(Icons.map),
         onPressed: () {
-          Navigator.of(context).pushNamedAndRemoveUntil(
-            HomeScreen.routeName,
-            (route) => false,
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) =>
+                  PlanMapViewScreen(plan: widget.plan, place: widget.place),
+            ),
           );
         },
       ),

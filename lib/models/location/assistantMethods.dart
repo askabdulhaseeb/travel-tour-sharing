@@ -186,6 +186,7 @@ class AssistantMethods {
     if (_place != null) {
       Provider.of<PlacesProvider>(context, listen: false)
           .updateStartingPoint(_place);
+      PlacesMethods()?.storePlaceInfoInFirebase(_place);
     }
   }
 
@@ -202,6 +203,7 @@ class AssistantMethods {
     if (_place != null) {
       Provider.of<PlacesProvider>(context, listen: false)
           .updateEndingPoint(_place);
+      PlacesMethods().storePlaceInfoInFirebase(_place);
     }
   }
 }
