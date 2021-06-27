@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
         builder: (context, value, child) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            title: 'SafarKar-Travel and Explore Pakistan',
+            title: 'Tour & Travel Sharing',
             theme: ThemeData(
               primarySwatch: Colors.orange,
               visualDensity: VisualDensity.adaptivePlatformDensity,

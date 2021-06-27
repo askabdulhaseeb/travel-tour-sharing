@@ -1,20 +1,20 @@
 {
   "project_info": {
-    "project_number": "392515098356",
-    "project_id": "tour-travel-sharing-app",
-    "storage_bucket": "tour-travel-sharing-app.appspot.com"
+    "project_number": "475141349012",
+    "project_id": "tourandtravel-131b8",
+    "storage_bucket": "tourandtravel-131b8.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:392515098356:android:6b2773af8ade2eb951f0a1",
+        "mobilesdk_app_id": "1:475141349012:android:fd90c9a5b2ce0141d19e81",
         "android_client_info": {
           "package_name": "com.example.dummy_project"
         }
       },
       "oauth_client": [
         {
-          "client_id": "392515098356-g0u8rj5jui2747jfuf64ct8edbfm6ms7.apps.googleusercontent.com",
+          "client_id": "475141349012-pjea8v3ji7ua71j7d13or2hr9ofbb5od.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.dummy_project",
@@ -22,21 +22,28 @@
           }
         },
         {
-          "client_id": "392515098356-4372t299rs24sbnqdf9211m4gjhnqmcl.apps.googleusercontent.com",
+          "client_id": "475141349012-kssjtjpl7vt1g71h4mrijk4nc4k8dso9.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAXCVFEhtUfo7y0RUvGrMwb2FhXHYZ4IAE"
+          "current_key": "AIzaSyBWDxWRkkJYSX0eTGc7RH3TwPXhs-mK2KA"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "392515098356-4372t299rs24sbnqdf9211m4gjhnqmcl.apps.googleusercontent.com",
+              "client_id": "475141349012-kssjtjpl7vt1g71h4mrijk4nc4k8dso9.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "475141349012-0em6bmge3e0f95qci1ugndij89skegd9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.dummyProject"
+              }
             }
           ]
         }

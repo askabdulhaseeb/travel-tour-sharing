@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'myColors.dart';
 import 'myFonts.dart';
 
-Text safar = Text(
+Text _firstName = Text(
   'Tour&Travel',
   style: TextStyle(
     color: greenShade,
@@ -11,7 +11,7 @@ Text safar = Text(
     fontFamily: englishText,
   ),
 );
-Text kar = Text(
+Text _lastName = Text(
   'Sharing',
   style: TextStyle(
     color: blackShade,
@@ -23,7 +23,7 @@ Text kar = Text(
 
 Row appName = Row(
   children: [
-    safar,
-    kar,
+    _firstName,
+    _lastName,
   ],
 );
