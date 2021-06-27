@@ -6,4 +6,4 @@
 //
 // Same is in android/app/src/main/AndroidManifest.xml:
 // Same is in ios/Runner/AppDelegate.swift:
-final String placesAPI = 'AIzaSyB_g_nb63XXSxFo8iahSsL5v5uSBnH5TSY';
+final String placesAPI = 'AIzaSyAWbRp648GT1ul4kufR5A2WMC9t_B3EY4o';
