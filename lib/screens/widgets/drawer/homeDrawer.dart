@@ -1,3 +1,4 @@
+import 'package:dummy_project/screens/reportProbleScreen/report_problem_screen.dart';
 import 'package:dummy_project/screens/settingScreen/setting_screen.dart';
 import 'package:flutter/material.dart';
 import '../../../auth/authorisation.dart';
@@ -56,7 +57,10 @@ class HomeDrawer extends StatelessWidget {
                 DrawerTile(
                   icon: Icons.report,
                   title: 'Report Problem',
-                  onPress: () {},
+                  onPress: () {
+                    Navigator.of(context)
+                        .pushNamed(ReportProblemScreen.routeName);
+                  },
                 ),
               ],
             ),
