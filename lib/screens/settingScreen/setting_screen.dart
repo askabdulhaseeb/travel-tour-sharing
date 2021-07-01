@@ -16,7 +16,6 @@ class SettingScreen extends StatefulWidget {
 class _SettingScreenState extends State<SettingScreen> {
   String name, phone;
   PickedFile _image;
-  File file;
 
   void _onChangeName(String newName) {
     name = newName;
@@ -205,7 +204,22 @@ class _SettingScreenState extends State<SettingScreen> {
               child: Text('Back'),
             ),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () async {
+                final String url = await DatabaseMethods()
+                    .storeImageToFirestore(File(_image.path));
+                AppUser appUser = AppUser(
+                  uid: UserLocalData.getUserUID(),
+                  displayName: UserLocalData.getUserDisplayName(),
+                  email: UserLocalData.getUserEmail(),
+                  phoneNumber: UserLocalData.getUserPhoneNumber(),
+                  imageURL: url,
+                  interest: UserLocalData.getUserInterest(),
+                );
+                await DatabaseMethods().updateUserDoc(
+                    uid: UserLocalData.getUserUID(), userMap: appUser.toMap());
+                UserLocalData.setUserImageUrl(url);
+                Navigator.of(context).pop();
+              },
               child: Text('Save'),
             ),
           ],
