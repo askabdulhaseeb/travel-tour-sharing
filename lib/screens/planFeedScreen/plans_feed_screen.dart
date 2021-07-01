@@ -1,3 +1,7 @@
+import 'package:dummy_project/database/placesMethods.dart';
+import 'package:dummy_project/providers/placesproviders.dart';
+import 'package:dummy_project/screens/placeDeatilScreen/placeDetailScreen.dart';
+import 'package:dummy_project/screens/planDetailListView/plan_detail_list_view.dart';
 import 'package:flutter/material.dart';
 import '../../core/myColors.dart';
 import '../../database/planMethods.dart';
@@ -53,7 +57,31 @@ class _PlansFeedScreenState extends State<PlansFeedScreen> {
                         final Plan _plan =
                             Plan.fromDocument(snapshot?.data?.docs[index]);
                         return (_plan.uid != UserLocalData.getUserUID())
-                            ? FeedTile(plan: _plan)
+                            ? GestureDetector(
+                                onTap: () async {
+                                  Place dep = await PlacesMethods()
+                                      .getPlacesObjectFromFirebase(
+                                    _plan.departurePlaceID,
+                                  );
+                                  Place des = await PlacesMethods()
+                                      .getPlacesObjectFromFirebase(
+                                    _plan.destinationPlaceID,
+                                  );
+                                  Map<String, Place> placeMap = {
+                                    _plan.departurePlaceID: dep,
+                                    _plan.destinationPlaceID: des,
+                                  };
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => PlanDetailListView(
+                                        plan: _plan,
+                                        place: placeMap,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: FeedTile(plan: _plan),
+                              )
                             : Container();
                       },
                     )
