@@ -43,7 +43,7 @@ class _TripSliderState extends State<TripSlider> {
           SelectTripButton(
             currentPage: _current,
           ),
-          SizedBox(height: size.height * 0.05),
+          SizedBox(height: size.height * 0.08),
         ],
       ),
     );

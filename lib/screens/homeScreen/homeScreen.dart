@@ -1,3 +1,4 @@
+import 'package:dummy_project/screens/planFeedScreen/plans_feed_screen.dart';
 import 'package:flutter/material.dart';
 import 'slider/tripSlider.dart';
 import '../widgets/drawer/homeDrawer.dart';
@@ -30,6 +31,16 @@ class HomeScreen extends StatelessWidget {
             ),
             TripSlider(),
           ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        tooltip: 'Plans Feed',
+        onPressed: () {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              PlansFeedScreen.routeName, (route) => false);
+        },
+        child: Icon(
+          Icons.feed_outlined,
         ),
       ),
     );
