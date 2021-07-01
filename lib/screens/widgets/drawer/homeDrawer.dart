@@ -1,3 +1,4 @@
+import 'package:dummy_project/screens/settingScreen/setting_screen.dart';
 import 'package:flutter/material.dart';
 import '../../../auth/authorisation.dart';
 import '../../../core/myColors.dart';
@@ -48,7 +49,9 @@ class HomeDrawer extends StatelessWidget {
                 DrawerTile(
                   icon: Icons.settings,
                   title: 'Settings',
-                  onPress: () {},
+                  onPress: () {
+                    Navigator.of(context).pushNamed(SettingScreen.routeName);
+                  },
                 ),
                 DrawerTile(
                   icon: Icons.report,

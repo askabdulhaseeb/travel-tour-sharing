@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../models/app_user.dart';
 import 'userLocalData.dart';
 
@@ -59,5 +63,24 @@ class DatabaseMethods {
         .collection(_fUser)
         .doc(uid)
         .update(userMap);
+  }
+
+  storeImageToFirestore(File image) async {
+    try {
+      final ref = FirebaseStorage.instance.ref(
+          'profile/${UserLocalData.getUserUID() + DateTime.now().millisecondsSinceEpoch.toString()}');
+
+      var task = ref.putFile(image);
+      if (task == null) return;
+      final snapshot = await task.whenComplete(() {});
+      final urlDownload = await snapshot.ref.getDownloadURL();
+      return urlDownload;
+    } on FirebaseException catch (e) {
+      Fluttertoast.showToast(
+          msg: '${e.toString()}',
+          timeInSecForIosWeb: 5,
+          backgroundColor: Colors.red);
+      return null;
+    }
   }
 }
