@@ -49,7 +49,6 @@ AppBar homeAppBar(context) {
           ),
         ),
       ),
-      // TODO: Import Profile Pic here By NetworkImage('Path')
     ],
   );
 }
