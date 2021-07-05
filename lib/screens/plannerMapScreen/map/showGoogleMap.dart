@@ -162,7 +162,7 @@ class _ShowGoogleMapState extends State<ShowGoogleMap> {
     return Marker(
       markerId: MarkerId(place.getPlaceID()),
       infoWindow: InfoWindow(title: place.getPlaceName()),
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
       position: LatLng(place.getPlaceLatitude(), place.getPlaceLongitude()),
     );
   }
