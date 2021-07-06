@@ -57,6 +57,13 @@ class DatabaseMethods {
     return FirebaseFirestore.instance.collection(_fUser).doc(uid).get();
   }
 
+  searchUserByName(String name) async {
+    return FirebaseFirestore.instance
+        .collection(_fUser)
+        .where('displayName', isGreaterThanOrEqualTo: name.toUpperCase())
+        .snapshots();
+  }
+
   updateUserDoc(
       {@required String uid, @required Map<String, dynamic> userMap}) async {
     return await FirebaseFirestore.instance

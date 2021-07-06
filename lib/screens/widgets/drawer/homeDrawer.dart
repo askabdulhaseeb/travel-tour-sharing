@@ -1,5 +1,6 @@
 import 'package:dummy_project/screens/reportProbleScreen/report_problem_screen.dart';
 import 'package:dummy_project/screens/settingScreen/setting_screen.dart';
+import 'package:dummy_project/screens/shareLocationScreen/share_location_screen.dart';
 import 'package:flutter/material.dart';
 import '../../../auth/authorisation.dart';
 import '../../../core/myColors.dart';
@@ -48,18 +49,26 @@ class HomeDrawer extends StatelessWidget {
                   },
                 ),
                 DrawerTile(
-                  icon: Icons.settings,
-                  title: 'Settings',
-                  onPress: () {
-                    Navigator.of(context).pushNamed(SettingScreen.routeName);
-                  },
-                ),
-                DrawerTile(
                   icon: Icons.report,
                   title: 'Report Problem',
                   onPress: () {
                     Navigator.of(context)
                         .pushNamed(ReportProblemScreen.routeName);
+                  },
+                ),
+                DrawerTile(
+                  icon: Icons.add_location_alt_outlined,
+                  title: 'Share Location',
+                  onPress: () {
+                    Navigator.of(context)
+                        .pushNamed(ShareLocationScreen.routeName);
+                  },
+                ),
+                DrawerTile(
+                  icon: Icons.settings,
+                  title: 'Settings',
+                  onPress: () {
+                    Navigator.of(context).pushNamed(SettingScreen.routeName);
                   },
                 ),
               ],
