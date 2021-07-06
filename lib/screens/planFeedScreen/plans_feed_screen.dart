@@ -1,6 +1,6 @@
+import 'package:dummy_project/database/location_sharing_methods.dart';
 import 'package:dummy_project/database/placesMethods.dart';
 import 'package:dummy_project/providers/placesproviders.dart';
-import 'package:dummy_project/screens/placeDeatilScreen/placeDetailScreen.dart';
 import 'package:dummy_project/screens/planDetailListView/plan_detail_list_view.dart';
 import 'package:flutter/material.dart';
 import '../../core/myColors.dart';
@@ -21,6 +21,7 @@ class _PlansFeedScreenState extends State<PlansFeedScreen> {
   _initPage() async {
     _feed = await PlanMethods().getAllPublicPlans();
     setState(() {});
+    await LocationSharingMethods().updateUserLocation();
   }
 
   @override

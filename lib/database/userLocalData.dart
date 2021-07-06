@@ -13,6 +13,7 @@ class UserLocalData {
   static const _phoneNumberKey = 'PhoneNumber';
   static const _imageUrlKey = 'IMAGEURLKEY';
   static const _interest = 'USERINTEREST';
+  static const _shareLocationWith = 'SHARELOCATIONWITH';
 
   //s
   // Setters
@@ -35,6 +36,9 @@ class UserLocalData {
   static Future setUserInterest(List<String> interest) async =>
       await _preferences.setStringList(_interest, interest ?? []);
 
+  static Future setShareLocationWith(List<String> shareWith) async =>
+      await _preferences.setStringList(_shareLocationWith, shareWith ?? []);
+
   // static Future setPlaceIDInLocalData(String id) async =>
   //     await _preferences.setString(_placeID, id ?? '');
 
@@ -50,6 +54,8 @@ class UserLocalData {
   static String getUserImageUrl() => _preferences.getString(_imageUrlKey) ?? '';
   static List<String> getUserInterest() =>
       _preferences.getStringList(_interest) ?? [];
+  static List<String> getShareLocationWith() =>
+      _preferences.getStringList(_shareLocationWith) ?? [];
   // static String getPlaceIDForLocalData() =>
   //     _preferences.getString(_placeID) ?? '';
 }

@@ -3,7 +3,6 @@ import 'package:dummy_project/database/databaseMethod.dart';
 import 'package:dummy_project/database/location_sharing_methods.dart';
 import 'package:dummy_project/database/userLocalData.dart';
 import 'package:dummy_project/models/app_user.dart';
-import 'package:dummy_project/models/location_share.dart';
 import 'package:dummy_project/screens/widgets/circularProfileImage.dart';
 import 'package:dummy_project/screens/widgets/homeAppBar.dart';
 import 'package:dummy_project/screens/widgets/showLoadingDialog.dart';
@@ -20,20 +19,21 @@ class ShareLocationScreen extends StatefulWidget {
 class _ShareLocationScreenState extends State<ShareLocationScreen> {
   String initialValue = '';
   Stream _seaarchResult;
-  LocationShare locationShare;
+  List<String> shareLocationWithUid = [];
   List<AppUser> shareLocationWith = [];
 
-  _getSharedWith() async {
-    var docs = await LocationSharingMethods().getCompleteDocOfCurrectUser();
-    print('Docs: $docs');
-    locationShare = LocationShare.fromDocument(docs);
-    setState(() {});
-    _getSharedUserData();
-  }
+  // _getSharedWith() async {
+  //   var docs = await LocationSharingMethods().getCompleteDocOfCurrectUser();
+  //   print('Docs: $docs');
+  //   locationShare = LocationShare.fromDocument(docs);
+  //   setState(() {});
+  //   _getSharedUserData();
+  // }
 
   _getSharedUserData() {
+    shareLocationWithUid = UserLocalData.getShareLocationWith();
     shareLocationWith.clear();
-    locationShare.shareWith.forEach((element) async {
+    shareLocationWithUid.forEach((element) async {
       var docs = await DatabaseMethods().getUserInfofromFirebase(element);
       AppUser _user = AppUser.fromDocument(docs);
       shareLocationWith.add(_user);
@@ -48,7 +48,8 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
 
   @override
   void initState() {
-    _getSharedWith();
+    // _getSharedWith();
+    _getSharedUserData();
     _onChange(initialValue);
     super.initState();
   }
@@ -117,15 +118,19 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
                               radius: 36,
                             ),
                             GestureDetector(
-                              onTap: () {
-                                locationShare.shareWith.removeWhere((element) =>
+                              onTap: () async {
+                                showLoadingDislog(context, 'message');
+                                shareLocationWithUid.removeWhere((element) =>
                                     element == shareLocationWith[index].uid);
                                 shareLocationWith.removeWhere((element) =>
                                     element.uid ==
                                     shareLocationWith[index].uid);
-                                LocationSharingMethods()
-                                    .shareLocationWith(locationShare.shareWith);
+                                UserLocalData.setShareLocationWith(
+                                    shareLocationWithUid);
+                                LocationSharingMethods().updateUserLocation();
+                                _getSharedUserData();
                                 setState(() {});
+                                Navigator.of(context).pop();
                               },
                               child: Icon(Icons.cancel),
                             ),
@@ -164,19 +169,19 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
                                       title: Text(ds['displayName']),
                                       subtitle: Text(ds['email']),
                                       onTap: () async {
-                                        if (locationShare.shareWith
+                                        if (shareLocationWithUid
                                             .contains(ds['uid'])) {
                                           Fluttertoast.showToast(
                                               msg: 'Already in this list',
                                               backgroundColor: Colors.red);
                                         } else {
                                           showLoadingDislog(context, '');
-                                          locationShare.shareWith
-                                              .add(ds['uid']);
+                                          shareLocationWithUid.add(ds['uid']);
+                                          UserLocalData.setShareLocationWith(
+                                              shareLocationWithUid);
+                                          LocationSharingMethods()
+                                              .updateUserLocation();
                                           _getSharedUserData();
-                                          await LocationSharingMethods()
-                                              .shareLocationWith(
-                                                  locationShare.shareWith);
                                           Navigator.of(context).pop();
                                           Fluttertoast.showToast(
                                               msg: 'Successfully added',
