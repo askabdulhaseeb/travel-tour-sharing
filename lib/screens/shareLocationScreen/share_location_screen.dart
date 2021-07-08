@@ -3,6 +3,7 @@ import 'package:dummy_project/database/databaseMethod.dart';
 import 'package:dummy_project/database/location_sharing_methods.dart';
 import 'package:dummy_project/database/userLocalData.dart';
 import 'package:dummy_project/models/app_user.dart';
+import 'package:dummy_project/models/location_share.dart';
 import 'package:dummy_project/screens/widgets/circularProfileImage.dart';
 import 'package:dummy_project/screens/widgets/homeAppBar.dart';
 import 'package:dummy_project/screens/widgets/showLoadingDialog.dart';
@@ -120,6 +121,10 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
                             GestureDetector(
                               onTap: () async {
                                 showLoadingDislog(context, 'message');
+                                LocationSharingMethods()
+                                    .updateShareLocationPersons(
+                                        addNewPerson: false,
+                                        uid: shareLocationWith[index].uid);
                                 shareLocationWithUid.removeWhere((element) =>
                                     element == shareLocationWith[index].uid);
                                 shareLocationWith.removeWhere((element) =>
@@ -127,7 +132,7 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
                                     shareLocationWith[index].uid);
                                 UserLocalData.setShareLocationWith(
                                     shareLocationWithUid);
-                                LocationSharingMethods().updateUserLocation();
+                                // LocationSharingMethods().updateUserLocation();
                                 _getSharedUserData();
                                 setState(() {});
                                 Navigator.of(context).pop();
@@ -176,11 +181,16 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
                                               backgroundColor: Colors.red);
                                         } else {
                                           showLoadingDislog(context, '');
+                                          LocationSharingMethods()
+                                              .updateShareLocationPersons(
+                                                  addNewPerson: true,
+                                                  uid: shareLocationWith[index]
+                                                      .uid);
                                           shareLocationWithUid.add(ds['uid']);
                                           UserLocalData.setShareLocationWith(
                                               shareLocationWithUid);
-                                          LocationSharingMethods()
-                                              .updateUserLocation();
+                                          // LocationSharingMethods()
+                                          //     .updateUserLocation();
                                           _getSharedUserData();
                                           Navigator.of(context).pop();
                                           Fluttertoast.showToast(

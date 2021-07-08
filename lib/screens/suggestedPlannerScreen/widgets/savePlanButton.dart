@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dummy_project/models/directions.dart';
+import 'package:dummy_project/screens/plannerMapScreen/map/directions_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import '../../../core/myColors.dart';
 import '../../../database/databaseMethod.dart';
@@ -31,6 +34,16 @@ class SavePlanButton extends StatelessWidget {
           PlacesProvider placesProvider =
               Provider.of<PlacesProvider>(context, listen: false);
           List<String> _plantype = placesProvider?.endingPoint?.getPlaceTypes();
+          final Directions _duration =
+              await DirectionsRepository().getDirections(
+            origin: LatLng(placesProvider?.startingPoint?.getPlaceLatitude(),
+                placesProvider?.startingPoint?.getPlaceLongitude()),
+            destination: LatLng(placesProvider?.endingPoint?.getPlaceLatitude(),
+                placesProvider?.endingPoint?.getPlaceLongitude()),
+          );
+          int _distance = _giveDistanceInInt(_duration.totalDistance);
+          //( Distance / Average ) * Fule price
+          double _budget = (_distance / 10) * 110;
           Plan _plan = Plan(
             planID: '',
             uid: UserLocalData.getUserUID(),
@@ -40,7 +53,7 @@ class SavePlanButton extends StatelessWidget {
             planType: _plantype,
             isPublic: isPublic,
             likes: 0,
-            budget: 0,
+            budget: _budget,
             timeStemp: Timestamp.now(),
             departureTime:
                 tripDateTimeProvider?.departureTime?.getFormatedTime(),
@@ -91,5 +104,24 @@ class SavePlanButton extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  int _giveDistanceInInt(String distance) {
+    String temp = "";
+    for (int i = 0; i < distance.length; i++) {
+      if (distance[i] == '1' ||
+          distance[i] == '2' ||
+          distance[i] == '3' ||
+          distance[i] == '4' ||
+          distance[i] == '5' ||
+          distance[i] == '6' ||
+          distance[i] == '7' ||
+          distance[i] == '8' ||
+          distance[i] == '9' ||
+          distance[i] == '0') {
+        temp += distance[i];
+      }
+    }
+    return int.parse(temp);
   }
 }

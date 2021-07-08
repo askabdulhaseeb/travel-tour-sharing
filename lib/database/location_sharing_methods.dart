@@ -1,10 +1,48 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dummy_project/database/userLocalData.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class LocationSharingMethods {
   static const _fCollection = 'user_location';
+  updateShareLocationPersons({
+    @required bool addNewPerson,
+    @required String uid,
+  }) async {
+    if (addNewPerson == true && uid.isNotEmpty) {
+      var doc = await FirebaseFirestore.instance
+          .collection(_fCollection)
+          .doc(uid)
+          .get();
+      if (doc.exists) {
+        List<String> _canView = List<String>.from(doc?.data()['canView']);
+        _canView.add(uid);
+        await FirebaseFirestore.instance
+            .collection(_fCollection)
+            .doc(uid)
+            .update({'canView': _canView});
+      }
+    } else if (addNewPerson == false && uid.isNotEmpty) {
+      var doc = await FirebaseFirestore.instance
+          .collection(_fCollection)
+          .doc(uid)
+          .get();
+      if (doc.exists) {
+        List<String> _canView = List<String>.from(doc?.data()['canView']);
+        _canView
+            .removeWhere((element) => element == UserLocalData.getUserUID());
+        await FirebaseFirestore.instance
+            .collection(_fCollection)
+            .doc(uid)
+            .update({'canView': _canView});
+      }
+    } else {
+      Fluttertoast.showToast(msg: 'Some Error', backgroundColor: Colors.red);
+    }
+  }
+
   updateUserLocation() async {
     Permission.location.request();
     LocationPermission permission;
@@ -28,6 +66,21 @@ class LocationSharingMethods {
       'time': Timestamp.now(),
       'shareWith': UserLocalData.getShareLocationWith(),
     });
+  }
+
+  removeLocationSharingWith(String uid) async {
+    var doc = await FirebaseFirestore.instance
+        .collection(_fCollection)
+        .doc(uid)
+        .get();
+    if (doc.exists) {
+      List<String> _canView = List<String>.from(doc?.data()['canView']);
+      _canView.removeWhere((element) => element == UserLocalData.getUserUID());
+      await FirebaseFirestore.instance
+          .collection(_fCollection)
+          .doc(uid)
+          .update({'canView': _canView});
+    }
   }
 
   getCompleteDocOfCurrectUser() async {
