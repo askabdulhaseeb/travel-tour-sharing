@@ -80,6 +80,28 @@ class LocationSharingMethods {
     });
   }
 
+  setupLocationForNewUser(String uid) async {
+    Permission.location.request();
+    LocationPermission permission;
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+    Position _currentPosition;
+    _currentPosition = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+    await FirebaseFirestore.instance.collection(_fCollection).doc(uid).set({
+      'lat': _currentPosition.latitude,
+      'lng': _currentPosition.longitude,
+      'time': Timestamp.now(),
+      'shareWith': UserLocalData.getShareLocationWith(),
+    });
+  }
+
   // removeLocationSharingWith(String uid) async {
   //   var doc = await FirebaseFirestore.instance
   //       .collection(_fCollection)

@@ -1,3 +1,4 @@
+import 'package:dummy_project/database/location_sharing_methods.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -49,6 +50,7 @@ class SignupButton extends StatelessWidget {
                 msg: 'Signup successful',
                 backgroundColor: Colors.green,
               );
+              await LocationSharingMethods().setupLocationForNewUser(_user.uid);
               Navigator.of(context).pushNamedAndRemoveUntil(
                   LoginScreen.routeName, (route) => false);
             }
