@@ -184,8 +184,7 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
                                           LocationSharingMethods()
                                               .updateShareLocationPersons(
                                                   addNewPerson: true,
-                                                  uid: shareLocationWith[index]
-                                                      .uid);
+                                                  uid: ds['uid']);
                                           shareLocationWithUid.add(ds['uid']);
                                           UserLocalData.setShareLocationWith(
                                               shareLocationWithUid);

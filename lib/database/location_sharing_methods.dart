@@ -17,20 +17,28 @@ class LocationSharingMethods {
           .doc(uid)
           .get();
       if (doc.exists) {
-        List<String> _canView = List<String>.from(doc?.data()['canView']);
-        _canView.add(uid);
+        List<String> _canView = List<String>.from(doc?.data()['canView'] ?? []);
+        _canView.add(UserLocalData.getUserUID());
         await FirebaseFirestore.instance
             .collection(_fCollection)
             .doc(uid)
             .update({'canView': _canView});
+      } else {
+        await FirebaseFirestore.instance.collection(_fCollection).doc(uid).set({
+          'canView': [UserLocalData.getUserUID()]
+        });
       }
+      await FirebaseFirestore.instance
+          .collection(_fCollection)
+          .doc(UserLocalData.getUserUID())
+          .update({'shareWith': UserLocalData.getShareLocationWith()});
     } else if (addNewPerson == false && uid.isNotEmpty) {
       var doc = await FirebaseFirestore.instance
           .collection(_fCollection)
           .doc(uid)
           .get();
       if (doc.exists) {
-        List<String> _canView = List<String>.from(doc?.data()['canView']);
+        List<String> _canView = List<String>.from(doc?.data()['canView'] ?? []);
         _canView
             .removeWhere((element) => element == UserLocalData.getUserUID());
         await FirebaseFirestore.instance
@@ -38,6 +46,10 @@ class LocationSharingMethods {
             .doc(uid)
             .update({'canView': _canView});
       }
+      await FirebaseFirestore.instance
+          .collection(_fCollection)
+          .doc(UserLocalData.getUserUID())
+          .update({'shareWith': UserLocalData.getShareLocationWith()});
     } else {
       Fluttertoast.showToast(msg: 'Some Error', backgroundColor: Colors.red);
     }
@@ -60,7 +72,7 @@ class LocationSharingMethods {
     await FirebaseFirestore.instance
         .collection(_fCollection)
         .doc(UserLocalData.getUserUID())
-        .set({
+        .update({
       'lat': _currentPosition.latitude,
       'lng': _currentPosition.longitude,
       'time': Timestamp.now(),
@@ -68,20 +80,20 @@ class LocationSharingMethods {
     });
   }
 
-  removeLocationSharingWith(String uid) async {
-    var doc = await FirebaseFirestore.instance
-        .collection(_fCollection)
-        .doc(uid)
-        .get();
-    if (doc.exists) {
-      List<String> _canView = List<String>.from(doc?.data()['canView']);
-      _canView.removeWhere((element) => element == UserLocalData.getUserUID());
-      await FirebaseFirestore.instance
-          .collection(_fCollection)
-          .doc(uid)
-          .update({'canView': _canView});
-    }
-  }
+  // removeLocationSharingWith(String uid) async {
+  //   var doc = await FirebaseFirestore.instance
+  //       .collection(_fCollection)
+  //       .doc(uid)
+  //       .get();
+  //   if (doc.exists) {
+  //     List<String> _canView = List<String>.from(doc?.data()['canView']);
+  //     _canView.removeWhere((element) => element == UserLocalData.getUserUID());
+  //     await FirebaseFirestore.instance
+  //         .collection(_fCollection)
+  //         .doc(uid)
+  //         .update({'canView': _canView});
+  //   }
+  // }
 
   getCompleteDocOfCurrectUser() async {
     return await FirebaseFirestore.instance
@@ -90,10 +102,10 @@ class LocationSharingMethods {
         .get();
   }
 
-  shareLocationWith(List<String> shareWith) async {
-    await FirebaseFirestore.instance
-        .collection(_fCollection)
-        .doc(UserLocalData.getUserUID())
-        .update({'shareWith': shareWith});
-  }
+  // shareLocationWith(List<String> shareWith) async {
+  //   await FirebaseFirestore.instance
+  //       .collection(_fCollection)
+  //       .doc(UserLocalData.getUserUID())
+  //       .update({'shareWith': shareWith});
+  // }
 }
