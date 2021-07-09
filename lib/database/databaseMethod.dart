@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dummy_project/database/location_sharing_methods.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +44,10 @@ class DatabaseMethods {
     UserLocalData.setUserPhoneNumber(user?.phoneNumber ?? '');
     UserLocalData.setUserImageUrl(user?.imageURL ?? '');
     UserLocalData.setUserInterest(user?.interest ?? []);
+    final doc = LocationSharingMethods().getCompleteDocOfCurrectUser();
+    List<String> shareWith =
+        List<String>.from(doc?.data()['shareWith'] ?? []) ?? [];
+    UserLocalData.setShareLocationWith(shareWith);
   }
 
   storeUserInfoInLocalStorageFromGoogle(User user) {

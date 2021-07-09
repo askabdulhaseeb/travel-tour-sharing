@@ -76,7 +76,6 @@ class LocationSharingMethods {
       'lat': _currentPosition.latitude,
       'lng': _currentPosition.longitude,
       'time': Timestamp.now(),
-      'shareWith': UserLocalData.getShareLocationWith(),
     });
   }
 
