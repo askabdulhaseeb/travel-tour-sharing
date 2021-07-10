@@ -1,9 +1,12 @@
 import 'package:dummy_project/database/databaseMethod.dart';
 import 'package:dummy_project/database/location_sharing_methods.dart';
 import 'package:dummy_project/models/app_user.dart';
+import 'package:dummy_project/screens/viewSharedLocations/show_user_on_map.dart';
 import 'package:dummy_project/screens/widgets/circularProfileImage.dart';
 import 'package:dummy_project/screens/widgets/homeAppBar.dart';
+import 'package:dummy_project/screens/widgets/showLoadingDialog.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ViewSharedLocations extends StatefulWidget {
   static const routeName = '/ViewSharedLocations';
@@ -46,7 +49,35 @@ class _ViewSharedLocationsState extends State<ViewSharedLocations> {
                       itemCount: _canView?.length,
                       itemBuilder: (context, index) {
                         return ListTile(
-                          onTap: () {},
+                          onTap: () async {
+                            showLoadingDislog(context, 'message');
+                            final _locationDoc = await LocationSharingMethods()
+                                .getCompleteDocOfAnyUser(
+                              uid: _canView[index].uid,
+                            );
+                            if (_locationDoc == null) {
+                              Navigator.of(context).pop();
+                              Fluttertoast.showToast(
+                                msg: 'Unable to show the location now!',
+                                backgroundColor: Colors.red,
+                              );
+                            } else {
+                              final double lat =
+                                  (_locationDoc?.data()['lat'] ?? 0.0 + 0.0);
+                              final double lng =
+                                  (_locationDoc?.data()['lng'] ?? 0.0 + 0.0);
+                              Navigator.of(context).pop();
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => ShowUserLocationOnMap(
+                                    user: _canView[index],
+                                    lat: lat,
+                                    lng: lng,
+                                  ),
+                                ),
+                              );
+                            }
+                          },
                           leading: CircularProfileImage(
                             imageUrl: _canView[index].imageURL,
                           ),

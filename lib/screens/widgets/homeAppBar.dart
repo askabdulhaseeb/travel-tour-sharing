@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dummy_project/database/location_sharing_methods.dart';
 import 'package:flutter/material.dart';
 import '../../core/myAppName.dart';
 import '../../core/myColors.dart';
@@ -9,7 +10,12 @@ import '../../models/app_user.dart';
 import '../profileScreen/profile_screen.dart';
 import 'circularProfileImage.dart';
 
+_updateLocation() async {
+  await LocationSharingMethods().updateUserLocation();
+}
+
 AppBar homeAppBar(context) {
+  _updateLocation();
   return AppBar(
     leadingWidth: 26,
     centerTitle: false,

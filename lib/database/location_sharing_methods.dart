@@ -123,6 +123,14 @@ class LocationSharingMethods {
         .get();
   }
 
+  getCompleteDocOfAnyUser({@required String uid}) async {
+    return await FirebaseFirestore.instance
+        .collection(_fCollection)
+        .doc(uid)
+        .get()
+        .onError((error, stackTrace) => null);
+  }
+
   // shareLocationWith(List<String> shareWith) async {
   //   await FirebaseFirestore.instance
   //       .collection(_fCollection)
