@@ -1,5 +1,6 @@
 import 'package:dummy_project/screens/settingScreen/setting_screen.dart';
 import 'package:dummy_project/screens/shareLocationScreen/share_location_screen.dart';
+import 'package:dummy_project/screens/viewSharedLocations/view_shared_locations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -71,6 +72,7 @@ class MyApp extends StatelessWidget {
               ProfileScreen.routeName: (ctx) => ProfileScreen(),
               ReportProblemScreen.routeName: (ctx) => ReportProblemScreen(),
               ShareLocationScreen.routeName: (ctx) => ShareLocationScreen(),
+              ViewSharedLocations.routeName: (ctx) => ViewSharedLocations(),
               SettingScreen.routeName: (ctx) => SettingScreen(),
             },
           );

@@ -1,6 +1,7 @@
 import 'package:dummy_project/screens/reportProbleScreen/report_problem_screen.dart';
 import 'package:dummy_project/screens/settingScreen/setting_screen.dart';
 import 'package:dummy_project/screens/shareLocationScreen/share_location_screen.dart';
+import 'package:dummy_project/screens/viewSharedLocations/view_shared_locations.dart';
 import 'package:flutter/material.dart';
 import '../../../auth/authorisation.dart';
 import '../../../core/myColors.dart';
@@ -62,6 +63,14 @@ class HomeDrawer extends StatelessWidget {
                   onPress: () {
                     Navigator.of(context)
                         .pushNamed(ShareLocationScreen.routeName);
+                  },
+                ),
+                DrawerTile(
+                  icon: Icons.location_searching,
+                  title: 'View Locations',
+                  onPress: () {
+                    Navigator.of(context)
+                        .pushNamed(ViewSharedLocations.routeName);
                   },
                 ),
                 DrawerTile(
