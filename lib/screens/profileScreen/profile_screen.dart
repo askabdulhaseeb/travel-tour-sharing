@@ -19,13 +19,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool isLoading = true;
   List<PlacesTypeCatalog> _catalog = [];
   _initPage() async {
+    List<String> _allCatelogId = [];
+    final QuerySnapshot _catDoc =
+        await PlacesTypeCatalogMethods().getAllPlacesCatalog();
+    _catDoc.docs.forEach((element) {
+      final PlacesTypeCatalog temp = PlacesTypeCatalog.fromDocument(element);
+      _allCatelogId.add(temp.id);
+    });
+
     widget._user?.interest?.forEach((element) async {
       final DocumentSnapshot snapshot =
           await PlacesTypeCatalogMethods().getSpecificTypeInfo(id: element);
       final PlacesTypeCatalog temp = PlacesTypeCatalog.fromDocument(snapshot);
-      _catalog.add(temp);
+      if (_allCatelogId.contains(temp.id)) {
+        _catalog.add(temp);
+      }
       setState(() {});
     });
+
     isLoading = false;
     setState(() {});
   }
@@ -72,11 +83,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: widget._user?.interest?.length ?? 0,
+                      itemCount: _catalog?.length ?? 0,
                       itemBuilder: (context, index) {
                         if (widget._user.interest.length > 0) {
                           return InterestTileWidget(interest: _catalog[index]);
-                          // return Text(_catalog[index]?.name);
                         } else {
                           return Container();
                         }
