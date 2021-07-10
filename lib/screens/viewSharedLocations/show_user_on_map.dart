@@ -32,11 +32,6 @@ class _ShowUserLocationOnMapState extends State<ShowUserLocationOnMap> {
     zoom: 14.4746,
   );
 
-  // _getUserCurrentLocation() async {
-  //   _currentPosition = await Geolocator.getCurrentPosition(
-  //       desiredAccuracy: LocationAccuracy.high);
-  // }
-
   setInitialCam() {
     CameraPosition _currentCameraPosition = new CameraPosition(
       target: LatLng(widget.lat, widget.lng),
