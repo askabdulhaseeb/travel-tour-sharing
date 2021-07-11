@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:dummy_project/core/myAPIs.dart';
 import 'package:dummy_project/database/userLocalData.dart';
+import 'package:dummy_project/screens/widgets/showLoadingDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
@@ -98,6 +99,59 @@ class _ShowGoogleMapState extends State<ShowGoogleMap> {
       _pitPointMarkers.add(_getPitPointMarker(place));
     });
     setState(() {});
+  }
+
+  _setAllMarkers() {
+    _pitPointMarkers.clear();
+    _pitPointMarkers.add(_origin);
+    _pitPointMarkers.add(_destination);
+    _nearbyPlaces.forEach((place) {
+      _pitPointMarkers.add(_getPitPointMarker(place));
+    });
+    setState(() {});
+  }
+
+  Future<List<Place>> _getPitPointsOfSpecificKeyPoint(String placeType) async {
+    List<Place> placeList = await getNearbyPlaces(
+      widget.place[widget.plan?.departurePlaceID].getPlaceLatitude(),
+      widget.place[widget.plan?.departurePlaceID].getPlaceLongitude(),
+      placeType,
+    );
+    return placeList;
+  }
+
+  _setUpdatedPitPoints(String placeType) async {
+    if (_userInteresedSelectableList[0]['isSelected'] == true) {
+      _nearbyPlaces.clear();
+      // UserLocalData.getUserInterest().forEach((placeType) async {
+      //   List<Place> _temp = await _getPitPointsOfSpecificKeyPoint(placeType);
+      //   _nearbyPlaces.addAll(_temp);
+      //   setState(() {});
+      // });
+      _initSelectableOption();
+    } else {
+      if (_nearbyPlaces.contains(placeType)) {
+        _nearbyPlaces.clear();
+        // Future.wait();
+        _userInteresedSelectableList.forEach((placeType) async {
+          if (placeType['isSelected'] == true) {
+            List<Place> _temp =
+                await _getPitPointsOfSpecificKeyPoint(placeType['key']);
+            _nearbyPlaces.addAll(_temp);
+          }
+        });
+        // _otherSelectableList.forEach((placeType) async {
+        //   if (placeType['isSelected'] == true) {
+        //     List<Place> _temp =
+        //         await _getPitPointsOfSpecificKeyPoint(placeType['key']);
+        //     _nearbyPlaces.addAll(_temp);
+        //   }
+        // });
+      } else {
+        _nearbyPlaces.addAll(await _getPitPointsOfSpecificKeyPoint(placeType));
+      }
+    }
+    _setAllMarkers();
   }
 
   _initSelectableOption() {
@@ -244,16 +298,27 @@ class _ShowGoogleMapState extends State<ShowGoogleMap> {
                         itemCount: _userInteresedSelectableList.length,
                         itemBuilder: (context, index) {
                           return GestureDetector(
-                            onTap: () {
+                            onTap: () async {
+                              showLoadingDislog(context, 'message');
                               if (index == 0) {
                                 _initSelectableOption();
+                                _setAllMarkers();
+                              } else {
+                                _userInteresedSelectableList[0].update(
+                                  'isSelected',
+                                  (value) => false,
+                                );
+                                _userInteresedSelectableList[index].update(
+                                  'isSelected',
+                                  (value) =>
+                                      !_userInteresedSelectableList[index]
+                                          ['isSelected'],
+                                );
                               }
-                              _userInteresedSelectableList[index].update(
-                                'isSelected',
-                                (value) => !_userInteresedSelectableList[index]
-                                    ['isSelected'],
-                              );
+                              await _setUpdatedPitPoints(
+                                  _userInteresedSelectableList[index]['key']);
                               setState(() {});
+                              Navigator.of(context).pop();
                             },
                             child: Container(
                               height: 38,
@@ -300,6 +365,10 @@ class _ShowGoogleMapState extends State<ShowGoogleMap> {
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: () {
+                              _userInteresedSelectableList[0].update(
+                                'isSelected',
+                                (value) => false,
+                              );
                               _otherSelectableList[index].update(
                                 'isSelected',
                                 (value) =>
