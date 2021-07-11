@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'package:dummy_project/core/myAPIs.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../core/myColors.dart';
 import '../../../models/directions.dart';
@@ -30,26 +33,37 @@ class _ShowGoogleMapState extends State<ShowGoogleMap> {
   Completer<GoogleMapController> _completer = Completer();
   GoogleMapController _googleMapController;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  Position _currentPosition;
+  // Position _currentPosition;
   Marker _origin, _destination;
   Directions _info;
+  List<Place> _nearbyPlaces = [];
+  List<Marker> _pitPointMarkers = [];
 
-  _getUserCurrentLocation() async {
-    _currentPosition = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-
-    CameraPosition _currentCameraPosition = new CameraPosition(
-      target: LatLng(_currentPosition.latitude, _currentPosition.longitude),
-      zoom: 14,
+  Place _jsonToPlaceConvertion(dynamic place) {
+    return Place(
+      id: place['place_id'] ?? '1234565434567875678',
+      name: place['name'] ?? 'Fack Place',
+      lat: place['geometry']['location']['lat'] ?? 0.0,
+      long: place['geometry']['location']['lng'] ?? 0.0,
+      rating: 0.0,
+      address: place['formatted_address'] ?? '',
+      reviews: [],
+      imageUrl: '',
+      types: List<String>.from(place['types'] ?? []),
     );
+  }
 
-    _googleMapController
-        .animateCamera(CameraUpdate.newCameraPosition(_currentCameraPosition));
-
-    String address = await AssistantMethods.searchCoordinateAddress(
-        _currentPosition, context, true);
-
-    print(address);
+  Future<List<Place>> getNearbyPlaces(
+      double lat, double lng, String placeType) async {
+    var url =
+        'https://maps.googleapis.com/maps/api/place/textsearch/json?location=$lat,$lng&type=$placeType&rankby=distance&key=$placesAPI';
+    var response = await http.get(Uri.parse(url));
+    var json = convert.jsonDecode(response.body);
+    var jsonResults = json['results'] as List;
+    jsonResults.forEach((place) {
+      _nearbyPlaces.add(_jsonToPlaceConvertion(place));
+    });
+    return _nearbyPlaces;
   }
 
   setInitialCam() {
@@ -59,12 +73,20 @@ class _ShowGoogleMapState extends State<ShowGoogleMap> {
     );
 
     _googleMapController
-        .animateCamera(CameraUpdate.newCameraPosition(_currentCameraPosition));
+        .animateCamera(CameraUpdate?.newCameraPosition(_currentCameraPosition));
   }
 
   _initPage() async {
     _origin = _getMarker(widget.place[widget.plan?.departurePlaceID]);
     _destination = _getMarker(widget.place[widget.plan?.destinationPlaceID]);
+    _nearbyPlaces = await getNearbyPlaces(
+      widget.place[widget.plan?.departurePlaceID].getPlaceLatitude(),
+      widget.place[widget.plan?.departurePlaceID].getPlaceLongitude(),
+      'abba',
+    );
+    _nearbyPlaces.forEach((place) {
+      _pitPointMarkers.add(_getPitPointMarker(place));
+    });
     _getDuration();
     setInitialCam();
     setState(() {});
@@ -72,8 +94,8 @@ class _ShowGoogleMapState extends State<ShowGoogleMap> {
 
   @override
   void initState() {
-    _initPage();
     super.initState();
+    _initPage();
   }
 
   @override
@@ -91,12 +113,17 @@ class _ShowGoogleMapState extends State<ShowGoogleMap> {
           onMapCreated: (GoogleMapController controller) {
             _completer.complete(controller);
             _googleMapController = controller;
-            // _getUserCurrentLocation();
             setInitialCam();
           },
           markers: {
             if (_origin != null) _origin,
-            if (_destination != null) _destination
+            if (_destination != null) _destination,
+            if (_pitPointMarkers[0] != null) _pitPointMarkers[0],
+            if (_pitPointMarkers[1] != null) _pitPointMarkers[1],
+            if (_pitPointMarkers[2] != null) _pitPointMarkers[2],
+            if (_pitPointMarkers[3] != null) _pitPointMarkers[3],
+            if (_pitPointMarkers[4] != null) _pitPointMarkers[4],
+            if (_pitPointMarkers[5] != null) _pitPointMarkers[5],
           },
           polylines: {
             if (_info != null)
@@ -163,6 +190,15 @@ class _ShowGoogleMapState extends State<ShowGoogleMap> {
       markerId: MarkerId(place.getPlaceID()),
       infoWindow: InfoWindow(title: place.getPlaceName()),
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+      position: LatLng(place.getPlaceLatitude(), place.getPlaceLongitude()),
+    );
+  }
+
+  Marker _getPitPointMarker(Place place) {
+    return Marker(
+      markerId: MarkerId(place.getPlaceID()),
+      infoWindow: InfoWindow(title: place.getPlaceName()),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
       position: LatLng(place.getPlaceLatitude(), place.getPlaceLongitude()),
     );
   }

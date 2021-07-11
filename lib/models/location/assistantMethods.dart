@@ -129,7 +129,6 @@ class AssistantMethods {
         }
         try {
           // TODO: Fetch Reviews
-
           Map<String, dynamic> mapp = {};
           res['result']['reviews'].forEach((e) {
             mapp = {};
