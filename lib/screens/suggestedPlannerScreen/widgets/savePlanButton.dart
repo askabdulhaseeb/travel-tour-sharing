@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dummy_project/database/places_type_catalog.dart';
 import 'package:dummy_project/models/directions.dart';
+import 'package:dummy_project/models/place_type_catalog.dart';
 import 'package:dummy_project/screens/plannerMapScreen/map/directions_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -66,9 +68,19 @@ class SavePlanButton extends StatelessWidget {
           await PlanMethods().storePlanAtFirebase(_plan);
 
           final List<String> _userInterest = UserLocalData.getUserInterest();
+          List<String> _allCatelogId = [];
+          final QuerySnapshot _catDoc =
+              await PlacesTypeCatalogMethods().getAllPlacesCatalog();
+          _catDoc.docs.forEach((element) {
+            final PlacesTypeCatalog temp =
+                PlacesTypeCatalog.fromDocument(element);
+            _allCatelogId.add(temp.id);
+          });
           _plantype?.forEach((pType) {
-            if (!_userInterest.contains(pType)) {
-              _userInterest.add(pType);
+            if (_allCatelogId.contains(pType)) {
+              if (!_userInterest.contains(pType)) {
+                _userInterest.add(pType);
+              }
             }
           });
           await DatabaseMethods().updateUserDoc(

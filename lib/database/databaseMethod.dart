@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dummy_project/database/location_sharing_methods.dart';
+import 'package:dummy_project/database/places_type_catalog.dart';
+import 'package:dummy_project/models/place_type_catalog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +45,24 @@ class DatabaseMethods {
     UserLocalData.setUserDisplayName(user?.displayName ?? '');
     UserLocalData.setUserPhoneNumber(user?.phoneNumber ?? '');
     UserLocalData.setUserImageUrl(user?.imageURL ?? '');
-    UserLocalData.setUserInterest(user?.interest ?? []);
+    // Fetching all catelog
+    // and store only available catelog
+    final List<String> _userInterest = [];
+    List<String> _allCatelogId = [];
+    final QuerySnapshot _catDoc =
+        await PlacesTypeCatalogMethods().getAllPlacesCatalog();
+    _catDoc.docs.forEach((element) {
+      final PlacesTypeCatalog temp = PlacesTypeCatalog.fromDocument(element);
+      _allCatelogId.add(temp.id);
+    });
+    user?.interest?.forEach((pType) {
+      if (_allCatelogId.contains(pType)) {
+        if (!_userInterest.contains(pType)) {
+          _userInterest.add(pType);
+        }
+      }
+    });
+    UserLocalData.setUserInterest(_userInterest ?? []);
     final doc = LocationSharingMethods().getCompleteDocOfCurrectUser();
     List<String> shareWith =
         List<String>.from(doc?.data()['shareWith'] ?? []) ?? [];
