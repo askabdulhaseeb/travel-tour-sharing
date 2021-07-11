@@ -18,11 +18,7 @@ class PlanMapViewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: homeAppBar(context),
-      body: Stack(
-        children: [
-          ShowGoogleMap(plan: plan, place: place),
-        ],
-      ),
+      body: ShowGoogleMap(plan: plan, place: place),
     );
   }
 }

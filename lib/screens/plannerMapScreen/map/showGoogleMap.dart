@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:dummy_project/core/myAPIs.dart';
+import 'package:dummy_project/database/userLocalData.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
@@ -38,6 +39,8 @@ class _ShowGoogleMapState extends State<ShowGoogleMap> {
   Directions _info;
   List<Place> _nearbyPlaces = [];
   List<Marker> _pitPointMarkers = [];
+  List<Map<String, dynamic>> _userInteresedSelectableList = [];
+  List<Map<String, dynamic>> _otherSelectableList = [];
 
   Place _jsonToPlaceConvertion(dynamic place) {
     return Place(
@@ -55,132 +58,283 @@ class _ShowGoogleMapState extends State<ShowGoogleMap> {
 
   Future<List<Place>> getNearbyPlaces(
       double lat, double lng, String placeType) async {
+    List<Place> _listOfPlace = [];
     var url =
         'https://maps.googleapis.com/maps/api/place/textsearch/json?location=$lat,$lng&type=$placeType&rankby=distance&key=$placesAPI';
     var response = await http.get(Uri.parse(url));
     var json = convert.jsonDecode(response.body);
     var jsonResults = json['results'] as List;
     jsonResults.forEach((place) {
-      _nearbyPlaces.add(_jsonToPlaceConvertion(place));
+      _listOfPlace.add(_jsonToPlaceConvertion(place));
     });
-    return _nearbyPlaces;
+    return _listOfPlace;
   }
 
-  setInitialCam() {
-    CameraPosition _currentCameraPosition = new CameraPosition(
-      target: _origin.position,
-      zoom: 14,
+  setInitialCam() async {
+    final GoogleMapController controller = await _completer.future;
+    controller.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: LatLng(
+            widget.place[widget.plan?.departurePlaceID].getPlaceLatitude(),
+            widget.place[widget.plan?.departurePlaceID].getPlaceLongitude(),
+          ),
+          zoom: 14.0,
+        ),
+      ),
     );
-
-    _googleMapController
-        .animateCamera(CameraUpdate?.newCameraPosition(_currentCameraPosition));
   }
 
-  _initPage() async {
-    _origin = _getMarker(widget.place[widget.plan?.departurePlaceID]);
-    _destination = _getMarker(widget.place[widget.plan?.destinationPlaceID]);
-    _nearbyPlaces = await getNearbyPlaces(
+  _pitPointsOfUserInterest() async {
+    _nearbyPlaces.clear();
+    List<Place> perPlaceList = await getNearbyPlaces(
       widget.place[widget.plan?.departurePlaceID].getPlaceLatitude(),
       widget.place[widget.plan?.departurePlaceID].getPlaceLongitude(),
-      'abba',
+      UserLocalData.getUserInterest()[0],
     );
+    _nearbyPlaces.addAll(perPlaceList);
+    setState(() {});
     _nearbyPlaces.forEach((place) {
       _pitPointMarkers.add(_getPitPointMarker(place));
     });
-    _getDuration();
+    setState(() {});
+  }
+
+  _initSelectableOption() {
+    _userInteresedSelectableList.clear();
+    _otherSelectableList.clear();
+    _userInteresedSelectableList.add({'key': 'All', 'isSelected': true});
+    UserLocalData.getUserInterest().forEach((interest) {
+      _userInteresedSelectableList.add({'key': interest, 'isSelected': false});
+    });
+    _otherSelectableList.add({'key': 'food', 'isSelected': false});
+    _otherSelectableList.add({'key': 'atm', 'isSelected': false});
+    _otherSelectableList.add({'key': 'restaurant', 'isSelected': false});
+    _otherSelectableList.add({'key': 'taxi_stand', 'isSelected': false});
+    _otherSelectableList.add({'key': 'bus_station', 'isSelected': false});
+    _otherSelectableList.add({'key': 'bank', 'isSelected': false});
+    _otherSelectableList.add({'key': 'hospital', 'isSelected': false});
+    _otherSelectableList.add({'key': 'police', 'isSelected': false});
+    setState(() {});
+  }
+
+  _initPage() async {
+    await _pitPointsOfUserInterest();
+    _origin = _getMarker(widget.place[widget.plan?.departurePlaceID]);
+    _destination = _getMarker(widget.place[widget.plan?.destinationPlaceID]);
+
+    _pitPointMarkers.add(_origin);
+    _pitPointMarkers.add(_destination);
     setInitialCam();
+    _getDuration();
+    _initSelectableOption();
     setState(() {});
   }
 
   @override
   void initState() {
-    super.initState();
     _initPage();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Column(
       children: [
-        GoogleMap(
-          key: _scaffoldKey,
-          mapType: MapType.normal,
-          initialCameraPosition: _kGooglePlex,
-          myLocationButtonEnabled: true,
-          myLocationEnabled: true,
-          zoomGesturesEnabled: true,
-          zoomControlsEnabled: true,
-          onMapCreated: (GoogleMapController controller) {
-            _completer.complete(controller);
-            _googleMapController = controller;
-            setInitialCam();
-          },
-          markers: {
-            if (_origin != null) _origin,
-            if (_destination != null) _destination,
-            if (_pitPointMarkers[0] != null) _pitPointMarkers[0],
-            if (_pitPointMarkers[1] != null) _pitPointMarkers[1],
-            if (_pitPointMarkers[2] != null) _pitPointMarkers[2],
-            if (_pitPointMarkers[3] != null) _pitPointMarkers[3],
-            if (_pitPointMarkers[4] != null) _pitPointMarkers[4],
-            if (_pitPointMarkers[5] != null) _pitPointMarkers[5],
-          },
-          polylines: {
-            if (_info != null)
-              Polyline(
-                polylineId: PolylineId(widget.plan.planID),
-                color: greenShade,
-                width: 5,
-                points: _info.polylinePoints
-                    .map((e) => LatLng(e.latitude, e.longitude))
-                    .toList(),
+        Expanded(
+          child: Stack(
+            children: [
+              GoogleMap(
+                key: _scaffoldKey,
+                mapType: MapType.normal,
+                initialCameraPosition: _kGooglePlex,
+                myLocationButtonEnabled: true,
+                myLocationEnabled: true,
+                zoomGesturesEnabled: true,
+                zoomControlsEnabled: true,
+                onMapCreated: (GoogleMapController controller) {
+                  _completer.complete(controller);
+                  _googleMapController = controller;
+                  setInitialCam();
+                },
+                markers: Set<Marker>.of(_pitPointMarkers),
+                polylines: {
+                  if (_info != null)
+                    Polyline(
+                      polylineId: PolylineId(widget.plan.planID),
+                      color: greenShade,
+                      width: 5,
+                      points: _info.polylinePoints
+                          .map((e) => LatLng(e.latitude, e.longitude))
+                          .toList(),
+                    ),
+                },
               ),
-          },
+              if (_info != null)
+                Positioned(
+                  top: 20.0,
+                  left: 60,
+                  right: 60,
+                  child: Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 6.0,
+                      horizontal: 12.0,
+                    ),
+                    decoration: BoxDecoration(
+                      color: greenShade,
+                      borderRadius: BorderRadius.circular(20.0),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black26,
+                          offset: Offset(0, 2),
+                          blurRadius: 6.0,
+                        )
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Distance: ${_info.totalDistance}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text(
+                          'Time: ${_info.totalDuration}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
-        if (_info != null)
-          Positioned(
-            top: 20.0,
-            left: 60,
-            right: 60,
-            child: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.symmetric(
-                vertical: 6.0,
-                horizontal: 12.0,
-              ),
-              decoration: BoxDecoration(
-                color: greenShade,
-                borderRadius: BorderRadius.circular(20.0),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black26,
-                    offset: Offset(0, 2),
-                    blurRadius: 6.0,
+        //
+        Container(
+          height: 180,
+          width: double.infinity,
+          padding: const EdgeInsets.only(left: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              //Interested
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Interested',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 40,
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _userInteresedSelectableList.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {
+                              if (index == 0) {
+                                _initSelectableOption();
+                              }
+                              _userInteresedSelectableList[index].update(
+                                'isSelected',
+                                (value) => !_userInteresedSelectableList[index]
+                                    ['isSelected'],
+                              );
+                              setState(() {});
+                            },
+                            child: Container(
+                              height: 38,
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 4,
+                                horizontal: 20,
+                              ),
+                              margin: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: (_userInteresedSelectableList[index]
+                                            ['isSelected'] ==
+                                        true)
+                                    ? Colors.blue
+                                    : Colors.grey[300],
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                _userInteresedSelectableList[index]['key']
+                                    .toString(),
+                              ),
+                            ),
+                          );
+                        }),
                   )
                 ],
               ),
-              child: Column(
+              // Important
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Distance: ${_info.totalDistance}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.w600,
+                    'Others',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Text(
-                    'Time: ${_info.totalDuration}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  SizedBox(
+                    height: 40,
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _otherSelectableList.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {
+                              _otherSelectableList[index].update(
+                                'isSelected',
+                                (value) =>
+                                    !_otherSelectableList[index]['isSelected'],
+                              );
+                              setState(() {});
+                            },
+                            child: Container(
+                              height: 38,
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 4,
+                                horizontal: 20,
+                              ),
+                              margin: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: (_otherSelectableList[index]
+                                            ['isSelected'] ==
+                                        true)
+                                    ? Colors.blue
+                                    : Colors.grey[300],
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                _otherSelectableList[index]['key'].toString(),
+                              ),
+                            ),
+                          );
+                        }),
+                  )
                 ],
               ),
-            ),
+            ],
           ),
+        )
       ],
     );
   }
