@@ -44,8 +44,12 @@ class SavePlanButton extends StatelessWidget {
                 placesProvider?.endingPoint?.getPlaceLongitude()),
           );
           int _distance = _giveDistanceInInt(_duration.totalDistance);
-          //( Distance / Average ) * Fule price
-          double _budget = (_distance / 10) * 110;
+          //_budget = ( Distance / Average ) * Fule price * two way trip
+          double _fulePrice =
+              double.parse(((_distance / 10) * 110 * 2).toStringAsFixed(2));
+          double _tooTex =
+              double.parse(((_distance / 500) * 1000 * 2).toStringAsFixed(1));
+          double _budget = _fulePrice + _tooTex;
           Plan _plan = Plan(
             planID: '',
             uid: UserLocalData.getUserUID(),

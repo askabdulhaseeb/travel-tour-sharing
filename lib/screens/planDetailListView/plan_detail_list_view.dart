@@ -38,24 +38,17 @@ class _PlanDetailListViewState extends State<PlanDetailListView> {
                   ),
                 ),
                 const SizedBox(height: 6),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Interest: ${widget?.plan?.likes ?? 0}',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Text(
-                      'Budget: ${widget?.plan?.budget ?? 0}',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
+                DisplayTextOfCost(
+                  title: 'Food Per Person/Daily:',
+                  price: 700,
+                ),
+                DisplayTextOfCost(
+                  title: 'Accommodation Per Person/Daily:',
+                  price: 1000,
+                ),
+                DisplayTextOfCost(
+                  title: 'Fule + ToolTex:',
+                  price: widget.plan.budget,
                 ),
                 const SizedBox(height: 10),
                 PlaceTimeDetailsCard(
@@ -86,6 +79,39 @@ class _PlanDetailListViewState extends State<PlanDetailListView> {
           );
         },
       ),
+    );
+  }
+}
+
+class DisplayTextOfCost extends StatelessWidget {
+  final String title;
+  final double price;
+  const DisplayTextOfCost({
+    Key key,
+    @required this.title,
+    @required this.price,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title ?? 'Unknown',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        Text(
+          '$price' ?? '0.0',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
     );
   }
 }

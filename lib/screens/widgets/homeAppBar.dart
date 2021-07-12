@@ -30,6 +30,7 @@ AppBar homeAppBar(context) {
           height: 30,
           child: Image.asset(appLogo),
         ),
+        const SizedBox(width: 2),
         Padding(
           padding: const EdgeInsets.only(top: 4.0),
           child: appName,

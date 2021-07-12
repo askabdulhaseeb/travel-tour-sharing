@@ -23,14 +23,6 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
   List<String> shareLocationWithUid = [];
   List<AppUser> shareLocationWith = [];
 
-  // _getSharedWith() async {
-  //   var docs = await LocationSharingMethods().getCompleteDocOfCurrectUser();
-  //   print('Docs: $docs');
-  //   locationShare = LocationShare.fromDocument(docs);
-  //   setState(() {});
-  //   _getSharedUserData();
-  // }
-
   _getSharedUserData() {
     shareLocationWithUid = UserLocalData.getShareLocationWith();
     shareLocationWith.clear();
@@ -49,7 +41,6 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
 
   @override
   void initState() {
-    // _getSharedWith();
     _getSharedUserData();
     _onChange(initialValue);
     super.initState();
@@ -67,7 +58,7 @@ class _ShareLocationScreenState extends State<ShareLocationScreen> {
           children: [
             TextFormField(
               initialValue: initialValue,
-              keyboardType: TextInputType.streetAddress,
+              keyboardType: TextInputType.name,
               autofocus: true,
               decoration: InputDecoration(
                 fillColor: Color(0xFFEEEEEE),
